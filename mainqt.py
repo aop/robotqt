@@ -4,6 +4,9 @@ from PyQt4 import QtGui, QtCore
 from math import sin, cos, radians, degrees
 import numpy as np
 
+#Debug boolean
+debug = False
+
 class Robot(QtGui.QWidget):
 	xOffset = 300
 	yOffset = 350
@@ -84,22 +87,28 @@ class Robot(QtGui.QWidget):
 
 	def mousePressEvent(self,event):
 		event.accept()
-		#print("Mouse pressed at %d %d" % (event.x(), event.y()))
+		if debug:
+			print("Mouse pressed event at %d %d" % (event.x(), event.y()))
+		# The origin of the robot is taken account here
 		xend = event.x() - self.xOffset
 		yend = event.y() - self.yOffset
-		#print("Mouse press fixed at %d %d" % (float(xend), float(yend)))
-		#self.clickPoints.append((event.x(), event.y()))
+		if debug:
+			print("Mouse press fixed to %d %d" % (float(xend), float(yend)))
+		#self.clickPoints.append((event.x(), event.y())) #???
 		angles = self.calcIKinematics(float(xend),float(yend))
 
 		self.repaint()
 
 	def mouseMoveEvent(self,event):
 		event.accept()
-		#print("Mouse pressed at %d %d" % (event.x(), event.y()))
+		if debug:
+			print("Mouse move event at %d %d" % (event.x(), event.y()))
+		# The origin of the robot is taken account here
 		xend = event.x() - self.xOffset
 		yend = event.y() - self.yOffset
-		#print("Mouse press fixed at %d %d" % (float(xend), float(yend)))
-		#self.clickPoints.append((event.x(), event.y()))
+		if debug:
+			print("Mouse move fixed to %d %d" % (float(xend), float(yend))) 
+		#self.clickPoints.append((event.x(), event.y())) #???
 		angles = self.calcIKinematics(float(xend),float(yend))
 
 		self.repaint()
