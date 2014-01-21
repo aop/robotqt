@@ -7,6 +7,10 @@ _Description: I did this to learn about forward and inverse kinematics. The proj
 1. _Dependencies_
 
 Depends on PyQt4 and numpy.
+Working and tested versions are with
+Python 2.7.5
+numpy==1.5.1
+PyQt4==4.10.3
 
 ### _How to run_
 
