@@ -52,23 +52,26 @@ class Robot(QtGui.QWidget):
 		if(np.sqrt(x**2+y**2)) > (self.length1+self.length2):
 			print("Too far away")
 			return
-		print((x,y))
-		print("%f/%f = %f "%((x**2+y**2-(self.length1)**2-(self.length2)**2),(2*self.length1*self.length2),(x**2+y**2-(self.length1)**2-(self.length2)**2)/(2*self.length1*self.length2)))
+		if debug:
+			print((x,y))
+			print("%f/%f = %f "%((x**2+y**2-(self.length1)**2-(self.length2)**2),(2*self.length1*self.length2),(x**2+y**2-(self.length1)**2-(self.length2)**2)/(2*self.length1*self.length2)))
 		angle2=np.arccos((x**2+y**2-(self.length1)**2-(self.length2)**2)/(2*self.length1*self.length2))
 		beta = np.arctan2(y,x)
 		xii = np.arccos((x**2+y**2+self.length1**2-self.length2**2)/(2*self.length1*np.sqrt(x**2+y**2)))
 		if angle2 < 0:
-			angle1 = beta + xii
-		else:
 			angle1 = beta - xii
+		else:
+			angle1 = beta + xii
 		self.angle1 = degrees(angle1)
 		self.angle2 = degrees(angle2)
-		print((self.angle1,self.angle2))
+		if debug:
+			print((self.angle1,self.angle2))
 		return (self.angle1,self.angle2)
 
 	def paintEvent(self,event):
 		painter = QtGui.QPainter()
 		painter.begin(self)
+
 		#painter.setWindow(QtCore.QRect(0,0,self.height(),self.width()))
 		points = self.calcFKinematics()
 		for i in range(1,self.numofJoints+1):
@@ -76,7 +79,7 @@ class Robot(QtGui.QWidget):
 			self.drawArm1(painter,points[i-1],points[i])
 			painter.setBrush(QtCore.Qt.red)
 			painter.setPen(QtCore.Qt.red)
-			painter.drawEllipse(QtCore.QPoint(self.xOffset+points[i][0],self.yOffset+points[i][1]),2,2)
+			painter.drawEllipse(QtCore.QPoint(self.xOffset+points[i][0],self.yOffset-points[i][1]),2,2)
 		painter.setBrush(QtCore.Qt.green)
 		painter.setPen(QtCore.Qt.green)
 		painter.drawEllipse(QtCore.QPoint(self.xOffset,self.yOffset),2,2) #Draw start of robot green
@@ -109,7 +112,7 @@ class Robot(QtGui.QWidget):
 		if debug:
 			print("Mouse move fixed to %d %d" % (float(xend), float(yend))) 
 		#self.clickPoints.append((event.x(), event.y())) #???
-		angles = self.calcIKinematics(float(xend),float(yend))
+		angles = self.calcIKinematics(float(xend),-float(yend))
 
 		self.repaint()
 
@@ -130,7 +133,7 @@ class Robot(QtGui.QWidget):
 		painter.setPen(QtGui.QColor(*white))
 		#print("Drawing from %d,%d to %d,%d" % (int(startpoints[0]),int(startpoints[1]),int(endpoints[0]),int(endpoints[1])))
 		#print("Drawing really from %d,%d to %d,%d" % (int(self.xOffset+startpoints[0]),int(self.yOffset+startpoints[1]),int(self.xOffset+endpoints[0]),int(self.yOffset+endpoints[1])))
-		painter.drawLine(int(self.xOffset+startpoints[0]),int(self.yOffset+startpoints[1]),int(self.xOffset+endpoints[0]),int(self.yOffset+endpoints[1]))
+		painter.drawLine(int(self.xOffset+startpoints[0]),int(self.yOffset-startpoints[1]),int(self.xOffset+endpoints[0]),int(self.yOffset-endpoints[1]))
 		
 
 	def drawArm(self,painter,startpoints,angle,lenght,width=1):
